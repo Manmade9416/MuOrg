@@ -16,10 +16,15 @@ muorg path/to/music/library/
 
 ### Options
 
-- `--dry-run` - Show what would be done without making changes
-- `-v, --verbose` - Enable verbose output
-- `--version` - Show version number
-- `-h, --help` - Show help message
+| Flag | Description |
+|------|-------------|
+| `--dry-run` | Show what would be done without making changes |
+| `-v, --verbose` | Enable verbose output |
+| `-f, --force` | Force re-organization even if files are already organized |
+| `--cleanup` | Remove collision duplicate files (*-1.ext, *-2.ext, etc.) |
+| `-y, --yes` | Skip confirmation prompts (use with --cleanup) |
+| `--version` | Show version number |
+| `-h, --help` | Show help message |
 
 ## How It Works
 
@@ -38,14 +43,24 @@ Artist/
 - **Album** is taken from the `album` tag. If no album exists, the track title is used
 - Files are moved to the new location and backed up to `.muorg_backup/`
 
-## Example
+## Safe & Idempotent
+
+Running MuOrg on an already-organized library does nothing by default - it detects organized files and skips them safely.
+
+## Examples
 
 ```bash
 # Dry run to see what would happen
 muorg ~/Music --dry-run
 
-# Actually organize
+# Actually organize (skips already organized files)
 muorg ~/Music -v
+
+# Force re-organization (processes all files fresh)
+muorg ~/Music --force -v
+
+# Clean up collision duplicates from previous runs
+muorg ~/Music --cleanup --yes
 ```
 
 ## License
