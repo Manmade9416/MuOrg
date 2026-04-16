@@ -33,6 +33,16 @@ def create_parser() -> argparse.ArgumentParser:
         help="Force re-organization even if files are already organized",
     )
     parser.add_argument(
+        "--cleanup",
+        action="store_true",
+        help="Remove collision duplicate files (*-1.ext, *-2.ext, etc.)",
+    )
+    parser.add_argument(
+        "--yes", "-y",
+        action="store_true",
+        help="Skip confirmation prompts",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"muorg {__version__}",
@@ -58,6 +68,8 @@ def main() -> int:
         dry_run=args.dry_run,
         verbose=args.verbose,
         force=args.force,
+        cleanup=args.cleanup,
+        yes=args.yes,
     )
     organizer.organize()
 

@@ -10,6 +10,7 @@ from .utils import (
     resolve_collision,
     ensure_directory,
     is_already_organized,
+    find_collision_duplicates,
     BACKUP_DIR_NAME,
 )
 from .tags import read_tags
@@ -28,16 +29,21 @@ class OrganizationResult:
 class MusicOrganizer:
     """Handles music file organization."""
 
-    def __init__(self, root_path: Path, dry_run: bool = False, verbose: bool = False, force: bool = False):
+    def __init__(self, root_path: Path, dry_run: bool = False, verbose: bool = False, force: bool = False, cleanup: bool = False, yes: bool = False):
         self.root_path = root_path.resolve()
         self.dry_run = dry_run
         self.verbose = verbose
         self.force = force
+        self.cleanup = cleanup
+        self.yes = yes
         self.backup_root = self.root_path / BACKUP_DIR_NAME
         self.result = OrganizationResult()
 
     def organize(self) -> OrganizationResult:
         """Organize all music files in the library."""
+        if self.cleanup:
+            return self._cleanup_collisions()
+
         audio_files = find_audio_files(self.root_path)
 
         if not audio_files:
@@ -54,6 +60,43 @@ class MusicOrganizer:
             self._cleanup_empty_dirs()
 
         self._print_summary()
+        return self.result
+
+    def _cleanup_collisions(self) -> OrganizationResult:
+        """Find and optionally remove collision duplicates (*-1.ext)."""
+        duplicates = find_collision_duplicates(self.root_path)
+
+        if not duplicates:
+            print("No collision duplicates found.")
+            return self.result
+
+        print(f"Found {len(duplicates)} collision duplicate(s):")
+        for dup in duplicates:
+            print(f"  - {dup.name}")
+
+        if not self.yes:
+            confirm = input("\nDelete these files? [y/N]: ").strip().lower()
+            if confirm not in ("y", "yes"):
+                print("Cleanup cancelled.")
+                return self.result
+        else:
+            print("\nDeleting files (--yes flag)...")
+
+        deleted = 0
+        for dup in duplicates:
+            try:
+                dup.unlink()
+                if self.verbose:
+                    print(f"  Deleted: {dup.name}")
+                deleted += 1
+            except Exception as e:
+                print(f"  Error deleting {dup.name}: {e}")
+
+        self._cleanup_empty_dirs()
+
+        print(f"\nCleanup Summary:")
+        print(f"  Deleted: {deleted}")
+        print(f"  Errors: {len(duplicates) - deleted}")
         return self.result
 
     def _process_file(self, file_path: Path) -> None:
@@ -75,7 +118,14 @@ class MusicOrganizer:
 
             target_dir = self.root_path / artist_folder / album_folder
             target_file = target_dir / file_path.name
-            target_file = resolve_collision(target_file)
+            target_file_resolved = resolve_collision(target_file)
+
+            if target_file_resolved.resolve() == file_path.resolve():
+                self.result.already_organized_count += 1
+                self._log(f"Already in place: {file_path.name}")
+                return
+
+            target_file = target_file_resolved
 
             if self.dry_run:
                 self._log(f"Would move: {file_path.name} -> {target_file}")

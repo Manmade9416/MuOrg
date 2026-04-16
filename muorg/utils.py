@@ -78,3 +78,19 @@ def is_already_organized(file_path: Path, artist: str, album: str, root_path: Pa
     """Check if file is already in the expected organized location."""
     expected_dir = root_path / sanitize_filename(artist) / sanitize_filename(album)
     return file_path.parent.resolve() == expected_dir.resolve()
+
+
+def find_collision_duplicates(root_path: Path) -> list[Path]:
+    """Find files with -1, -2, etc. suffix (collision duplicates)."""
+    backup_dir = root_path / BACKUP_DIR_NAME
+    duplicates = []
+    for path in root_path.rglob("*"):
+        if not path.is_file():
+            continue
+        if path.is_relative_to(backup_dir):
+            continue
+        stem = path.stem
+        if stem.endswith("-1") or stem.endswith("-2") or stem.endswith("-3") or stem.endswith("-4") or stem.endswith("-5"):
+            if path.suffix.lower() in AUDIO_EXTENSIONS:
+                duplicates.append(path)
+    return sorted(duplicates)
