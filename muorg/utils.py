@@ -10,8 +10,11 @@ BACKUP_DIR_NAME = ".muorg_backup"
 def find_audio_files(root_path: Path) -> list[Path]:
     """Recursively find all audio files in directory."""
     audio_files = []
+    backup_dir = root_path / BACKUP_DIR_NAME
     for path in root_path.rglob("*"):
         if path.is_file() and path.suffix.lower() in AUDIO_EXTENSIONS:
+            if path.is_relative_to(backup_dir):
+                continue
             audio_files.append(path)
     return sorted(audio_files)
 

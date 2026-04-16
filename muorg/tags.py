@@ -27,9 +27,23 @@ def extract_text(value) -> str:
         return ""
     if isinstance(value, str):
         return value
-    if hasattr(value, "text"):
-        return str(value.text[0]) if value.text else ""
+    if isinstance(value, list):
+        if value:
+            first = value[0]
+            if isinstance(first, str):
+                return first
+            if hasattr(first, "text") and first.text:
+                return str(first.text[0])
+    if hasattr(value, "text") and value.text:
+        return str(value.text[0])
     return ""
+
+
+def clean_artist_name(artist: str) -> str:
+    """Clean artist name - use first artist if multiple separated by ;"""
+    if ";" in artist:
+        return artist.split(";")[0].strip()
+    return artist
 
 
 def read_tags(file_path: Path) -> AudioTags | None:
@@ -65,6 +79,8 @@ def read_tags(file_path: Path) -> AudioTags | None:
     artist = get_first("artist") or get_first("albumartist") or ""
     album = get_first("album") or ""
     title = get_first("title") or file_path.stem
+
+    artist = clean_artist_name(artist) if artist else ""
 
     if not artist:
         artist = "Unknown Artist"

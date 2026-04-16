@@ -2,6 +2,7 @@
 from pathlib import Path
 from dataclasses import dataclass, field
 import shutil
+import os
 from .utils import (
     find_audio_files,
     create_backup,
@@ -46,6 +47,9 @@ class MusicOrganizer:
         for audio_file in audio_files:
             self._process_file(audio_file)
 
+        if not self.dry_run:
+            self._cleanup_empty_dirs()
+
         self._print_summary()
         return self.result
 
@@ -86,6 +90,22 @@ class MusicOrganizer:
         """Log message if verbose enabled."""
         if self.verbose:
             print(f"  {message}")
+
+    def _cleanup_empty_dirs(self) -> None:
+        """Remove empty directories left behind after moving files."""
+        backup_dir = self.root_path / BACKUP_DIR_NAME
+        for dirpath, dirnames, filenames in os.walk(self.root_path, topdown=False):
+            dir_path = Path(dirpath)
+            if dir_path == backup_dir:
+                continue
+            if dir_path == self.root_path:
+                continue
+            try:
+                if dir_path.exists() and not any(dir_path.iterdir()):
+                    dir_path.rmdir()
+                    self._log(f"Removed empty dir: {dir_path}")
+            except Exception as e:
+                pass
 
     def _print_summary(self) -> None:
         """Print operation summary."""
