@@ -26,6 +26,17 @@ muorg /path/to/music --force -v
 muorg /path/to/music --cleanup --yes
 ```
 
+## Supported Audio Formats
+
+Mutagen supports: MP3, FLAC, OGG, M4A, WAV, WMA, AAC, and more.
+
+Key implementation details in `tags.py`:
+- **MP3**: Uses ID3 tags with frame map (TPE1, TPE2, TALB, TIT2)
+- **M4A/MP4**: Uses MP4-specific atoms (©ART, aART, ©alb, ©nam)
+- **Other formats**: Uses generic mutagen tags
+
+Artist names are normalized to lowercase for consistent folder grouping.
+
 ## Linting
 
 ```bash
@@ -44,7 +55,7 @@ pip install build
 python3 -m build
 
 # Install from wheel
-pip install dist/*.whl
+pip install dist/muorg-*.whl --force-reinstall
 
 # Clean old versions
 rm dist/muorg-0.*
@@ -56,6 +67,6 @@ When releasing a new version:
 1. Update `muorg/__init__.py` - `__version__`
 2. Update `pyproject.toml` - `version`
 3. Build: `python3 -m build`
-4. Install: `pip install dist/*.whl --force-reinstall`
+4. Install: `pip install dist/muorg-*.whl --force-reinstall`
 5. Test the new version
 6. Commit with message describing changes
