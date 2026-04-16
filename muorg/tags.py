@@ -20,6 +20,13 @@ TAG_TO_FRAME_MAP = {
     "title": "TIT2",
 }
 
+MP4_TAG_MAP = {
+    "artist": "©ART",
+    "albumartist": "aART",
+    "album": "©alb",
+    "title": "©nam",
+}
+
 
 def extract_text(value) -> str:
     """Extract text from mutagen tag value."""
@@ -71,6 +78,10 @@ def read_tags(file_path: Path) -> AudioTags | None:
         try:
             if isinstance(audio, ID3):
                 frame_id = TAG_TO_FRAME_MAP.get(key, key)
+                return extract_text(audio.get(frame_id))
+            from mutagen.mp4 import MP4
+            if isinstance(audio, MP4):
+                frame_id = MP4_TAG_MAP.get(key, key)
                 return extract_text(audio.get(frame_id))
             return extract_text(audio.get(key))
         except Exception:
