@@ -91,7 +91,7 @@ def read_tags(file_path: Path) -> AudioTags | None:
     album = get_first("album") or ""
     title = get_first("title") or file_path.stem
 
-    artist = clean_artist_name(artist) if artist else ""
+    artist = clean_artist_name(artist).lower() if artist else ""
 
     if not artist:
         artist = "Unknown Artist"
