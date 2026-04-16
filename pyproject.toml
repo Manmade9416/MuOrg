@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "muorg"
+version = "0.1.0"
+description = "Music library organizer by artist and album tags"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "MuOrg", email = "muorg@example.com"}
+]
+keywords = ["music", "organizer", "id3", "tags", "library"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "mutagen>=1.47",
+]
+
+[project.scripts]
+muorg = "muorg.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/muorg/muorg"
+Repository = "https://github.com/muorg/muorg"
+Issues = "https://github.com/muorg/muorg/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["muorg*"]
+
+[tool.setuptools.package-data]
+muorg = ["py.typed"]
