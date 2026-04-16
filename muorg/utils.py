@@ -72,3 +72,9 @@ def print_verbose(message: str, verbose: bool) -> None:
     """Print message if verbose mode enabled."""
     if verbose:
         print(message, file=sys.stderr)
+
+
+def is_already_organized(file_path: Path, artist: str, album: str, root_path: Path) -> bool:
+    """Check if file is already in the expected organized location."""
+    expected_dir = root_path / sanitize_filename(artist) / sanitize_filename(album)
+    return file_path.parent.resolve() == expected_dir.resolve()

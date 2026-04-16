@@ -9,6 +9,7 @@ from .utils import (
     sanitize_filename,
     resolve_collision,
     ensure_directory,
+    is_already_organized,
     BACKUP_DIR_NAME,
 )
 from .tags import read_tags
@@ -19,6 +20,7 @@ class OrganizationResult:
     """Result of organization operation."""
     moved_count: int = 0
     skipped_count: int = 0
+    already_organized_count: int = 0
     error_count: int = 0
     errors: list[str] = field(default_factory=list)
 
@@ -26,10 +28,11 @@ class OrganizationResult:
 class MusicOrganizer:
     """Handles music file organization."""
 
-    def __init__(self, root_path: Path, dry_run: bool = False, verbose: bool = False):
+    def __init__(self, root_path: Path, dry_run: bool = False, verbose: bool = False, force: bool = False):
         self.root_path = root_path.resolve()
         self.dry_run = dry_run
         self.verbose = verbose
+        self.force = force
         self.backup_root = self.root_path / BACKUP_DIR_NAME
         self.result = OrganizationResult()
 
@@ -64,6 +67,12 @@ class MusicOrganizer:
 
             artist_folder = sanitize_filename(tags.artist)
             album_folder = sanitize_filename(tags.album)
+
+            if not self.force and is_already_organized(file_path, tags.artist, tags.album, self.root_path):
+                self.result.already_organized_count += 1
+                self._log(f"Already organized: {file_path.name}")
+                return
+
             target_dir = self.root_path / artist_folder / album_folder
             target_file = target_dir / file_path.name
             target_file = resolve_collision(target_file)
@@ -112,7 +121,9 @@ class MusicOrganizer:
         mode = "DRY RUN" if self.dry_run else "Organized"
         print(f"\n{mode} Summary:")
         print(f"  Moved: {self.result.moved_count}")
-        print(f"  Skipped: {self.result.skipped_count}")
+        print(f"  Skipped (no tags): {self.result.skipped_count}")
+        if self.result.already_organized_count > 0:
+            print(f"  Already organized: {self.result.already_organized_count}")
         print(f"  Errors: {self.result.error_count}")
 
         if self.result.errors:

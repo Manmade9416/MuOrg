@@ -28,6 +28,11 @@ def create_parser() -> argparse.ArgumentParser:
         help="Enable verbose output",
     )
     parser.add_argument(
+        "--force", "-f",
+        action="store_true",
+        help="Force re-organization even if files are already organized",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"muorg {__version__}",
@@ -52,6 +57,7 @@ def main() -> int:
         root_path=args.path,
         dry_run=args.dry_run,
         verbose=args.verbose,
+        force=args.force,
     )
     organizer.organize()
 
