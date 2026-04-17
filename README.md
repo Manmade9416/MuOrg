@@ -21,8 +21,12 @@ muorg path/to/music/library/
 | `--dry-run` | Show what would be done without making changes |
 | `-v, --verbose` | Enable verbose output |
 | `-f, --force` | Force re-organization even if files are already organized |
-| `--cleanup` | Remove collision duplicate files (*-1.ext, *-2.ext, etc.) |
-| `-y, --yes` | Skip confirmation prompts (use with --cleanup) |
+| `--cleanup` | Run smart cleanup: remove duplicates, ghost files, empty dirs |
+| `--clean-extras` | Include image and playlist files in cleanup (use with --cleanup) |
+| `--hash-algo` | Hash algorithm for duplicate detection (md5, sha1, sha256) |
+| `--min-size` | Minimum file size in bytes to keep (default: 1024) |
+| `--dry-run-clean` | Run cleanup in dry-run mode |
+| `-y, --yes` | Skip confirmation prompts |
 | `--version` | Show version number |
 | `-h, --help` | Show help message |
 
@@ -59,8 +63,17 @@ muorg ~/Music -v
 # Force re-organization (processes all files fresh)
 muorg ~/Music --force -v
 
-# Clean up collision duplicates from previous runs
+# Smart cleanup - remove duplicates and ghost files (shows preview)
+muorg ~/Music --cleanup --dry-run-clean
+
+# Smart cleanup with auto-confirm
 muorg ~/Music --cleanup --yes
+
+# Cleanup including images and playlists
+muorg ~/Music --cleanup --clean-extras --yes
+
+# Cleanup with custom min file size (e.g., 512 bytes)
+muorg ~/Music --cleanup --min-size 512 --yes
 ```
 
 ## License

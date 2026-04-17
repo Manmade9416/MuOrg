@@ -24,6 +24,12 @@ muorg /path/to/music --force -v
 
 # Test cleanup
 muorg /path/to/music --cleanup --yes
+
+# Test cleanup dry-run
+muorg /path/to/music --cleanup --dry-run-clean
+
+# Test cleanup with extras
+muorg /path/to/music --cleanup --clean-extras --yes
 ```
 
 ## Supported Audio Formats
