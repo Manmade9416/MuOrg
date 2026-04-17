@@ -31,11 +31,13 @@ muorg /path/to/music --cleanup --yes
 Mutagen supports: MP3, FLAC, OGG, M4A, WAV, WMA, AAC, and more.
 
 Key implementation details in `tags.py`:
+- **Tag reading**: Uses `mutagen.File` factory for all formats (single call, no redundant ID3 parsing)
 - **MP3**: Uses ID3 tags with frame map (TPE1, TPE2, TALB, TIT2)
 - **M4A/MP4**: Uses MP4-specific atoms (©ART, aART, ©alb, ©nam)
 - **Other formats**: Uses generic mutagen tags
 
 Artist names are normalized to lowercase for consistent folder grouping.
+- **Artist cleaning**: Handles multiple delimiters (`;`, `,`, `/`, `&`, `|`, ` and `) - takes first artist from multi-artist tags
 
 ## Linting
 
