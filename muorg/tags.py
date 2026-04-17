@@ -47,10 +47,27 @@ def extract_text(value) -> str:
 
 
 def clean_artist_name(artist: str) -> str:
-    """Clean artist name - use first artist if multiple separated by ;"""
-    if ";" in artist:
-        return artist.split(";")[0].strip()
-    return artist
+    """
+    Return a single-artist name from a tag that may contain multiple artists.
+
+    Recognises common separators (semicolon, comma, slash, ampersand,
+    pipe, and the word "and"). The first non-empty element after splitting
+    is returned, trimmed of surrounding whitespace.
+    """
+    if not artist:
+        return artist
+
+    separators = [";", ",", "/", "&", "|", " and "]
+    normalized = artist
+    for sep in separators:
+        normalized = normalized.replace(sep, ";")
+
+    for part in normalized.split(";"):
+        part = part.strip()
+        if part:
+            return part
+
+    return artist.strip()
 
 
 def read_tags(file_path: Path) -> AudioTags | None:
