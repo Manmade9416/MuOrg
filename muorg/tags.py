@@ -55,20 +55,10 @@ def clean_artist_name(artist: str) -> str:
 
 def read_tags(file_path: Path) -> AudioTags | None:
     """Read tags from audio file using mutagen."""
-    audio = None
-
-    suffix = file_path.suffix.lower()
-    if suffix == ".mp3":
-        try:
-            audio = ID3(file_path)
-        except Exception:
-            pass
-
-    if audio is None:
-        try:
-            audio = mutagen.File(file_path)
-        except Exception:
-            pass
+    try:
+        audio = mutagen.File(file_path)
+    except Exception:
+        return None
 
     if audio is None:
         return None
@@ -76,11 +66,10 @@ def read_tags(file_path: Path) -> AudioTags | None:
     def get_first(key: str) -> str:
         """Safely get first value from tag."""
         try:
-            if isinstance(audio, ID3):
+            if isinstance(audio, mutagen.id3.ID3):
                 frame_id = TAG_TO_FRAME_MAP.get(key, key)
                 return extract_text(audio.get(frame_id))
-            from mutagen.mp4 import MP4
-            if isinstance(audio, MP4):
+            if isinstance(audio, mutagen.mp4.MP4):
                 frame_id = MP4_TAG_MAP.get(key, key)
                 return extract_text(audio.get(frame_id))
             return extract_text(audio.get(key))
