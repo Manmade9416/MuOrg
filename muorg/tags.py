@@ -83,7 +83,7 @@ def read_tags(file_path: Path) -> AudioTags | None:
     def get_first(key: str) -> str:
         """Safely get first value from tag."""
         try:
-            if isinstance(audio, mutagen.id3.ID3):
+            if isinstance(audio, mutagen.mp3.MP3):
                 frame_id = TAG_TO_FRAME_MAP.get(key, key)
                 return extract_text(audio.get(frame_id))
             if isinstance(audio, mutagen.mp4.MP4):
