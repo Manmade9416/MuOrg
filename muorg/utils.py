@@ -2,8 +2,11 @@
 from pathlib import Path
 import shutil
 import sys
+import hashlib
 
 AUDIO_EXTENSIONS = {".mp3", ".flac", ".ogg", ".m4a", ".wav", ".wma", ".aac"}
+AUX_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif"}
+AUX_PLAYLIST_EXTENSIONS = {".m3u", ".m3u8", ".pls", ".cue"}
 BACKUP_DIR_NAME = ".muorg_backup"
 
 
@@ -94,3 +97,29 @@ def find_collision_duplicates(root_path: Path) -> list[Path]:
             if path.suffix.lower() in AUDIO_EXTENSIONS:
                 duplicates.append(path)
     return sorted(duplicates)
+
+
+def compute_hash(file_path: Path, algo: str = "sha256") -> str:
+    """Compute hash of a file using specified algorithm."""
+    if algo == "md5":
+        hasher = hashlib.md5()
+    elif algo == "sha1":
+        hasher = hashlib.sha1()
+    else:
+        hasher = hashlib.sha256()
+
+    with open(file_path, "rb") as f:
+        while chunk := f.read(1024 * 1024):  # 1 MB chunks
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def is_aux_file(path: Path) -> bool:
+    """Check if file is an auxiliary file (image or playlist)."""
+    suffix = path.suffix.lower()
+    return suffix in AUX_IMAGE_EXTENSIONS or suffix in AUX_PLAYLIST_EXTENSIONS
+
+
+def is_audio_file(path: Path) -> bool:
+    """Check if file is a supported audio file."""
+    return path.suffix.lower() in AUDIO_EXTENSIONS

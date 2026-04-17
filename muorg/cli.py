@@ -35,7 +35,29 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--cleanup",
         action="store_true",
-        help="Remove collision duplicate files (*-1.ext, *-2.ext, etc.)",
+        help="Run smart cleanup: remove duplicates, ghost files, empty dirs, and optionally non-audio files",
+    )
+    parser.add_argument(
+        "--clean-extras",
+        action="store_true",
+        help="Include image and playlist files in cleanup (use with --cleanup)",
+    )
+    parser.add_argument(
+        "--hash-algo",
+        choices=["md5", "sha1", "sha256"],
+        default="sha256",
+        help="Hash algorithm for duplicate detection (default: sha256)",
+    )
+    parser.add_argument(
+        "--min-size",
+        type=int,
+        default=1024,
+        help="Minimum file size in bytes to keep; smaller files are considered garbage (default: 1024)",
+    )
+    parser.add_argument(
+        "--dry-run-clean",
+        action="store_true",
+        help="Run cleanup in dry-run mode (use with --cleanup)",
     )
     parser.add_argument(
         "--yes", "-y",
@@ -65,11 +87,15 @@ def main() -> int:
 
     organizer = MusicOrganizer(
         root_path=args.path,
-        dry_run=args.dry_run,
+        dry_run=args.dry_run or args.dry_run_clean,
         verbose=args.verbose,
         force=args.force,
         cleanup=args.cleanup,
         yes=args.yes,
+        clean_extras=args.clean_extras,
+        hash_algo=args.hash_algo,
+        min_size=args.min_size,
+        dry_run_clean=args.dry_run_clean,
     )
     organizer.organize()
 
