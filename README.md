@@ -78,4 +78,4 @@ muorg ~/Music --cleanup --min-size 512 --yes
 
 ## License
 
-MIT
+[GNU General Public License v3 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.html)
