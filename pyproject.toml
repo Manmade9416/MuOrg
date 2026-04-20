@@ -3,16 +3,16 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "muorg"
+name = "MuOrg"
 version = "0.5.3"
 description = "Music library organizer by artist and album tags"
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "MuOrg", email = "muorg@example.com"}
+    {name = "Manmade9416", email = "cr0d@proton.me"}
 ]
-keywords = ["music", "organizer", "id3", "tags", "library"]
+keywords = ["music", "organizer", "id3", "tags", "library", "cleaner"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
@@ -33,9 +33,9 @@ dependencies = [
 muorg = "muorg.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/muorg/muorg"
-Repository = "https://github.com/muorg/muorg"
-Issues = "https://github.com/muorg/muorg/issues"
+Homepage = "https://github.com/Manmade9416/MuOrg"
+Repository = "https://github.com/Manmade9416/MuOrg"
+Issues = "https://github.com/muorg/Manmade9416/MuOrg/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
