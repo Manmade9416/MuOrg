@@ -1,6 +1,6 @@
 # MuOrg
 
-Music library organizer - organize your music collection by artist and album tags.
+*Mu*sic library *Org*anizer - organize your music collection by artist and album tags & optionally clean up none music files and empty dirs.
 
 ## Installation
 
@@ -49,7 +49,7 @@ Artist/
 
 ## Safe & Idempotent
 
-Running MuOrg on an already-organized library does nothing by default - it detects organized files and skips them safely.
+Running MuOrg on an already-organized library does nothing by default - it detects organized files and skips them safely unless you **Force re-organization**.
 
 ## Examples
 
