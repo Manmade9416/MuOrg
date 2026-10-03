@@ -55,26 +55,11 @@ python3 -m py_compile muorg/*.py
 python3 -c "import muorg; from muorg import organizer, tags, utils, cli"
 ```
 
-## Building
-
-```bash
-# Build package
-pip install build
-python3 -m build
-
-# Install from wheel
-pip install dist/muorg-*.whl --force-reinstall
-
-# Clean old versions
-rm dist/muorg-0.*
-```
-
 ## Version Bumping
 
 When releasing a new version:
 1. Update `muorg/__init__.py` - `__version__`
 2. Update `pyproject.toml` - `version`
-3. Build: `python3 -m build`
-4. Install: `pip install dist/muorg-*.whl --force-reinstall`
+4. Install: `pip install .`
 5. Test the new version
 6. Commit with message describing changes
