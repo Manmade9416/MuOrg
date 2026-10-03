@@ -5,7 +5,9 @@
 ## Installation
 
 ```bash
-pip install muorg
+pip install .
+# Or if you want to make live changes
+pip install -e .
 ```
 
 ## Usage
