@@ -5,9 +5,12 @@
 ## Installation
 
 ```bash
+# create a virtual env
+python -m venv .muorg
+# activate virtual env
+source .muorg/bin/activate
+# now you can install and use muorg easily anywhere
 pip install .
-# Or if you want to make live changes
-pip install -e .
 ```
 
 ## Usage
